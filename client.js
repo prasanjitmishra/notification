@@ -27,14 +27,6 @@ async function run() {
       'content-type': 'application/json'
     }
   });
-
-  // await fetch('/subscribe', {
-  //   method: 'POST',
-  //   body: JSON.stringify(subscription),
-  //   headers: {
-  //     'content-type': 'application/json'
-  //   }
-  // });
   
   console.log('Sent push');
 }

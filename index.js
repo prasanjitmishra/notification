@@ -7,14 +7,13 @@ const DesktopToken = require('./desktop_tokens.js').default;
 
 // Replace with your email
 webpush.setVapidDetails('mailto:val@karpov.io', publicVapidKey, privateVapidKey);
-
 const app = express();
 
 app.use(require('body-parser').json());
-mongoose.connect("mongodb://nucleus.southindia.cloudapp.azure.com:27017/nucleus", { user: "admin", pass: "admin123" });
+mongoose.connect("mongodb://ds135757.mlab.com:35757/develop19", { user: "jackman", pass: "jackman" });
 app.post('/notify', (req, res) => {
   const subscription = req.body;
-  const payload = JSON.stringify({ title: subscription.title, body:"hi"  });
+  const payload = JSON.stringify({ title: subscription.title, body: subscription.body });
   console.log("here");
   console.log(subscription);
   webpush.sendNotification(subscription, payload).catch(error => {
@@ -25,7 +24,6 @@ app.post('/notify', (req, res) => {
 
 
 app.post('/save-subcriptions', (req,res) => {
-  console.log("here11");
   var subscription = req.body;
   var updateData = {
     endpoint:subscription.endpoint,
