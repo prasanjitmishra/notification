@@ -11,6 +11,10 @@ const app = express();
 
 app.use(require('body-parser').json());
 mongoose.connect("mongodb://ds135757.mlab.com:35757/develop19", { user: "jackman", pass: "jackman" });
+
+/**
+ * This is to notify a single user
+ */
 app.post('/notify', (req, res) => {
   const subscription = req.body;
   const payload = JSON.stringify({ title: subscription.title, body: subscription.body });
@@ -22,7 +26,9 @@ app.post('/notify', (req, res) => {
   res.status(201).json({status:200,msg:'Success'});
 });
 
-
+/**
+ * This route is to save the subscribed users
+ */
 app.post('/save-subcriptions', (req,res) => {
   var subscription = req.body;
   var updateData = {
@@ -47,11 +53,35 @@ app.post('/save-subcriptions', (req,res) => {
     });
 });
 
-
+/**
+ * This is to check the subscribed users
+ */
 app.get('/desktopTokens', (req,res) => {
   DesktopToken.find().then((data)=>{
     res.json(data);
     res.status(200);
+  })
+});
+
+/**
+ * This is to notify all the users
+ */
+app.post('/notify-all', (req,res) => {
+  DesktopToken.find().then((data)=>{
+    data.forEach((value) => {
+      subscription = {};
+      subscription.endpoint = value.endpoint;
+      subscription.expirationTime = null;
+      subscription.keys = {};
+      subscription.keys.p256dh = value.p256dh;
+      subscription.keys.auth = value.auth;
+      
+      var payload = JSON.stringify({ title: req.body.title, body: req.body.body });
+      webpush.sendNotification(subscription, payload).catch(error => {
+        console.error(error.stack);
+      });
+    });
+    res.status(200).json({status:200,msg:'Success'});
   })
 });
 
